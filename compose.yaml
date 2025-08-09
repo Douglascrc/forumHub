@@ -1,0 +1,10 @@
+services:
+  db-forum:
+    image: postgres:latest
+    container_name: db-forum
+    environment:
+      POSTGRES_USER: forum_user
+      POSTGRES_PASSWORD: forum_password
+      POSTGRES_DB: forum_db
+    ports:
+      - "5432:5432"
