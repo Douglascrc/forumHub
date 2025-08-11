@@ -4,9 +4,8 @@ import com.forumhub.domain.answer.Answer;
 import com.forumhub.domain.curso.Course;
 import com.forumhub.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.Valid;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +13,8 @@ import java.util.List;
 @Entity(name = "Topic")
 @Table(name = "topics")
 @NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
 @EqualsAndHashCode(of= "id")
 public class Topic {
@@ -31,14 +32,21 @@ public class Topic {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "autor_id")
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "curso_id")
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @OneToMany(mappedBy = "topic")
     private List<Answer> answers;
+
+    public Topic(@Valid TopicRegistrationData topicData) {
+        this.title = topicData.title();
+        this.message = topicData.message();
+        this.createdAt = LocalDateTime.now();
+        this.stateTopic = StatusTopic.OPEN;
+    }
 
 }
