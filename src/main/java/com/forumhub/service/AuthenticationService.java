@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +33,7 @@ public class AuthenticationService implements UserDetailsService {
         return repository.findByEmail(username);
     }
 
-    public String gerarToken(User user) {
+    public String genarateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
@@ -47,6 +46,19 @@ public class AuthenticationService implements UserDetailsService {
         } catch (JWTCreationException e) {
             throw new RuntimeException("Erro ao gerar token JWT", e);
 
+        }
+    }
+
+    public String getSubject(String tokenJWT) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("ForumHub")
+                    .build()
+                    .verify(tokenJWT)
+                    .getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido ou expirado", e);
         }
     }
 

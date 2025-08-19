@@ -29,7 +29,7 @@ public class AuthenticationController {
     public ResponseEntity login(@RequestBody @Valid LoginData data) {
         var token = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var authentication = manager.authenticate(token);
-        var tokenJWT = authenticationService.gerarToken((User) authentication.getPrincipal());
+        var tokenJWT = authenticationService.genarateToken((User) authentication.getPrincipal());
 
         return ResponseEntity.ok(new TokenData(tokenJWT));
     }
